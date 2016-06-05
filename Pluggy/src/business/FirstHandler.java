@@ -25,6 +25,7 @@ public class FirstHandler extends TelegramLongPollingBot {
                      SendMessage sendMessageRequest = new SendMessage();
                      sendMessageRequest.setChatId(message.getChatId().toString()); //who should get the message? the sender from which we got the message...
                      sendMessageRequest.setText("you said: " + message.getText());
+                   
                      try {
                              sendMessage(sendMessageRequest); //at the end, so some magic and send the message ;)
                      } catch (TelegramApiException e) {
