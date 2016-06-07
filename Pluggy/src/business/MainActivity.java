@@ -1,9 +1,18 @@
 package business;
 
+import java.io.IOException;
+
 public class MainActivity {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
+		
+		System.out.println("Pluggy - Smart Plug Software\nVersion:" + Session.VERSION + "\nEugenio Moro @unisalento\n");
+		
+		//Load configuration
+		//initialize session
 		Session.currentSession();
+		
+		
 	
 
 	}

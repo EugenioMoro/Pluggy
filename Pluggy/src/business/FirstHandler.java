@@ -39,7 +39,7 @@ public class FirstHandler extends TelegramLongPollingBot {
 	@Override
 	public String getBotToken() {
 		// TODO Auto-generated method stub
-		return Session.TOKEN;
+		return null;
 	}
 
 }
