@@ -12,9 +12,6 @@ public class Session {
 	public final static String VERSION="0.1 alpha";
 	private static Session currentSession;
 	
-	private String token;
-	private float kwhcost;
-	private Boolean isMonitored;
 	private Vector<User> users;
 	private Properties SysProps = new Properties();
 	private Vector<Properties> userVectProps = new Vector<Properties>();
@@ -32,50 +29,65 @@ public class Session {
 		}
 	
 
-	public Session() {	
-		initialize();
+
+	public String getToken() {
+		return SysProps.getProperty("token");
 	}
-	
-	private void initialize() {
-
-		System.out.println("Loading system configuration");
-		if (Prop.noConfig()){
-			System.out.println("No configuration found, switching to default");
-			SysProps = Prop.defaults();
-			//TODO link to logic first turn on, first user
-		} else {
-			try {
-				SysProps = Prop.loadSysProps();
-				userVectProps = Prop.loadUsersProps();
-
-				System.out.println("Loading users");
-				User u = new User();
-				users = new Vector<User>();
-				Iterator<Properties> i = userVectProps.iterator();
-				while (i.hasNext()){
-
-					u.setId(Integer.parseInt(((Properties) i.next()).getProperty("id")));
-					u.setUsername(((Properties) i.next()).getProperty("username"));
-					u.setChatId(((Properties) i.next()).getProperty("chatid"));
-					u.setIsAdmin(Integer.parseInt(((Properties) i.next()).getProperty("isadmin")) != 0);
-					u.setIsAuth(Integer.parseInt(((Properties) i.next()).getProperty("isauth")) != 0);
-					u.setIsSub(Integer.parseInt(((Properties) i.next()).getProperty("issub")) != 0);
-					u.setHours(Integer.parseInt(((Properties) i.next()).getProperty("hours")));
-
-					users.addElement(u);
-				}
-			} catch (IOException e){
-
-			}
-
-			token=SysProps.getProperty("token");
-			kwhcost=Float.parseFloat(SysProps.getProperty("kwhcost"));
-			isMonitored=(Integer.parseInt(SysProps.getProperty("isMonitored")) != 0);
 
 
-		}
-		System.out.println("Done\n");
+	public void setToken(String token) {
+		SysProps.setProperty("token", token);
+		Prop.getInstance().updateSys();
+	}
 
+
+	public float getKwhcost() {
+		return Float.parseFloat(SysProps.getProperty("kwhcost"));
+	}
+
+
+	public void setKwhcost(float kwhcost) {
+		SysProps.setProperty("kwhcost", Float.toString(kwhcost));
+	}
+
+
+	public Boolean getIsMonitored() {
+		return Boolean.valueOf(SysProps.getProperty("ismonitored"));
+	}
+
+
+	public void setIsMonitored(Boolean isMonitored) {
+		SysProps.setProperty("ismonitored", Boolean.toString(isMonitored));
+	}
+
+
+	public Vector<User> getUsers() {
+		return users;
+	}
+
+
+	public void setUsers(Vector<User> users) {
+		this.users = users;
+	}
+
+
+	public Properties getSysProps() {
+		return SysProps;
+	}
+
+
+	public void setSysProps(Properties sysProps) {
+		SysProps = sysProps;
+	}
+
+
+	public Vector<Properties> getUserVectProps() {
+		return userVectProps;
+	}
+
+
+	public void setUserVectProps(Vector<Properties> userVectProps) {
+		this.userVectProps = userVectProps;
 	}
 
 }
