@@ -2,7 +2,6 @@ package business;
 
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Vector;
 
 import model.User;
 
@@ -19,12 +18,12 @@ public class UserManager {
 	
 	public void addUser(User u){
 		Session.currentSession().getUsers().add(u);
+		Prop.getInstance().updateUsers();
 	}
 	
 	public void buildFromProps(){
 		System.out.println("Loading users");
 		User u = new User();
-		Session.currentSession().setUsers(new Vector<User>());
 		Iterator<Properties> i = Session.currentSession().getUserVectProps().iterator();
 		while (i.hasNext()){
 

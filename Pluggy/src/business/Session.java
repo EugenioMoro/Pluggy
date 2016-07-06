@@ -1,7 +1,5 @@
 package business;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -12,7 +10,7 @@ public class Session {
 	public final static String VERSION="0.1 alpha";
 	private static Session currentSession;
 	
-	private Vector<User> users;
+	private Vector<User> users = new Vector<User>();
 	private Properties SysProps = new Properties();
 	private Vector<Properties> userVectProps = new Vector<Properties>();
 	
@@ -48,6 +46,7 @@ public class Session {
 
 	public void setKwhcost(float kwhcost) {
 		SysProps.setProperty("kwhcost", Float.toString(kwhcost));
+		Prop.getInstance().updateSys();
 	}
 
 
@@ -58,16 +57,12 @@ public class Session {
 
 	public void setIsMonitored(Boolean isMonitored) {
 		SysProps.setProperty("ismonitored", Boolean.toString(isMonitored));
+		Prop.getInstance().updateSys();
 	}
 
 
 	public Vector<User> getUsers() {
 		return users;
-	}
-
-
-	public void setUsers(Vector<User> users) {
-		this.users = users;
 	}
 
 

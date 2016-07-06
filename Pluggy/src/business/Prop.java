@@ -2,7 +2,6 @@ package business;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -18,15 +17,23 @@ public class Prop {
 	private  Boolean updateUsers=false;
 	private static Prop instance = null;
 
-	public static Prop getInstance() throws IOException, InterruptedException{
+	public static Prop getInstance(){
 		if (instance == null){
 			instance = new Prop();
 		}
 		return instance;
 	}
 	
-	public Prop() throws IOException, InterruptedException{
-		update();
+	public Prop() {
+		System.out.println("prop session");
+		initialize();
+//		try {
+//			update();
+//		} catch (IOException | InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		
+		
 	}
 	
 	private Properties defaults(){
@@ -52,7 +59,7 @@ public class Prop {
 	
 	private synchronized void update() throws IOException, InterruptedException{
 		while(true){
-			while(updateSys | updateUsers){ 
+			while(!updateSys){ //TODO add updateusers
 				wait();
 			}
 			if(updateSys){
@@ -66,16 +73,19 @@ public class Prop {
 	}
 
 	private void sysUpdater() throws IOException{
-		FileOutputStream out = new FileOutputStream("sysconf");
-		Session.currentSession().getSysProps().store(out, null);
-		out.close();
+		try {
+			FileOutputStream out = new FileOutputStream("sysconf");
+			Session.currentSession().getSysProps().store(out, null);
+			out.close();
+		} catch (IOException e){ e.printStackTrace(); }
 	}
-	
+
 	private void userUpdater() throws IOException{
 		Vector<User> uv = Session.currentSession().getUsers();
 		Iterator<User> i = uv.iterator();
 		FileOutputStream out = null;
 		Properties p = new Properties();
+		try {
 		while (i.hasNext()){
 			out = new FileOutputStream("usr" + String.valueOf(i.next().getId()));
 			
@@ -90,43 +100,49 @@ public class Prop {
 			p.store(out, null);
 		};
 		out.close();
+		} catch (IOException e){ e.printStackTrace(); }
 	}
 	
 	public Boolean noConfig(){
 		return !(new File("sysconf")).exists();
 	}
 	
-	
+
 	private void loadUsersProps() throws IOException{
-		Vector<Properties> userVectProps = Session.currentSession().getUserVectProps();
-		//Retrive working directory
-		File dir = new File(System.getProperty("user.dir").toString());
-		
-		//retrive files starting with usr, configuration file names will be usr<id>
-		File[] foundConf = dir.listFiles(new FilenameFilter() {
-			
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.startsWith("usr");
+		try {
+			Vector<Properties> userVectProps = Session.currentSession().getUserVectProps();
+			//Retrive working directory
+			File dir = new File(System.getProperty("user.dir").toString());
+
+			//retrive files starting with usr, configuration file names will be usr<id>
+			File[] foundConf = dir.listFiles(new FilenameFilter() {
+
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.startsWith("usr");
+				}
+			});
+
+			//load properties from files retrived
+			Properties userProps = new Properties();
+			FileInputStream in = null;
+			for (File file : foundConf){
+				in = new FileInputStream(file);
+				userProps.load(in);
+				userVectProps.addElement(userProps);
 			}
-		});
-		
-		//load properties from files retrived
-		Properties userProps = new Properties();
-		FileInputStream in = null;
-		for (File file : foundConf){
-			in = new FileInputStream(file);
-			userProps.load(in);
-			userVectProps.addElement(userProps);
+			in.close();
 		}
-		in.close();
+		catch (IOException e) { e.printStackTrace(); }
 	}
-	
+
 	private void loadSysProps() throws IOException {
-		FileInputStream in = new FileInputStream("sysconf");
-		Properties p = Session.currentSession().getSysProps();
-		p.load(in);
-		in.close();
+		try {
+			FileInputStream in = new FileInputStream("sysconf");
+			Properties p = Session.currentSession().getSysProps();
+			p.load(in);
+			in.close();
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 
 	public void initialize() {
@@ -137,14 +153,15 @@ public class Prop {
 			Session.currentSession().setSysProps(defaults());
 			//TODO link to logic first turn on, first user
 		} else {
-				
+				try {
 				loadSysProps();
 				loadUsersProps();
+				} catch (IOException e) { e.printStackTrace(); }
 				UserManager.getInstance().buildFromProps();
 				
-				token=SysProps.getProperty("token");
-				kwhcost=Float.parseFloat(SysProps.getProperty("kwhcost"));
-				isMonitored=(Integer.parseInt(SysProps.getProperty("isMonitored")) != 0);
+//				token=SysProps.getProperty("token");
+//				kwhcost=Float.parseFloat(SysProps.getProperty("kwhcost"));
+//				isMonitored=(Integer.parseInt(SysProps.getProperty("isMonitored")) != 0);
 
 
 		}
