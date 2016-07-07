@@ -9,13 +9,14 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
+import botContexts.FirstTOnContext;
 import model.User;
 
 public class Prop {
 
-	private  Boolean updateSys=false;
-	private  Boolean updateUsers=false;
 	private static Prop instance = null;
+	private Runnable sysUpdater;
+	private Runnable userUpdater;
 
 	public static Prop getInstance(){
 		if (instance == null){
@@ -25,15 +26,9 @@ public class Prop {
 	}
 	
 	public Prop() {
-		System.out.println("prop session");
+		System.out.println("Initializing props");
 		initialize();
-//		try {
-//			update();
-//		} catch (IOException | InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		
-		
+		System.out.println("\ninit done");
 	}
 	
 	private Properties defaults(){
@@ -47,30 +42,10 @@ public class Prop {
 		
 	}
 	
-	public synchronized void updateSys(){
-		updateSys=true;
-		notifyAll();
-	}
+
 	
-	public synchronized void updateUsers(){
-		updateUsers=true;
-		notifyAll();
-	}
 	
-	private synchronized void update() throws IOException, InterruptedException{
-		while(true){
-			while(!updateSys){ //TODO add updateusers
-				wait();
-			}
-			if(updateSys){
-				sysUpdater();
-				updateSys=false;
-			} else {
-				userUpdater();
-				updateUsers=false;
-			}
-		}
-	}
+
 
 	private void sysUpdater() throws IOException{
 		try {
@@ -82,20 +57,21 @@ public class Prop {
 
 	private void userUpdater() throws IOException{
 		Vector<User> uv = Session.currentSession().getUsers();
-		Iterator<User> i = uv.iterator();
+		System.out.print(Session.currentSession().getUsers().size());
 		FileOutputStream out = null;
 		Properties p = new Properties();
+		int i;
 		try {
-		while (i.hasNext()){
-			out = new FileOutputStream("usr" + String.valueOf(i.next().getId()));
+		for(i=0; i<uv.size(); i++){
+			out = new FileOutputStream("usr" + String.valueOf(uv.get(i).getId()));
 			
-			p.setProperty(String.valueOf(i.next().getId()), "id");
-			p.setProperty(i.next().getUsername(), "username");
-			p.setProperty(i.next().getChatId(), "chatid");
-			p.setProperty(i.next().getIsAdmin().toString(), "isadmin");
-			p.setProperty(i.next().getIsAuth().toString(), "isauth");
-			p.setProperty(i.next().getIsSub().toString(), "issub");
-			p.setProperty(String.valueOf(i.next().getHours()), "hours");
+			p.setProperty(String.valueOf(uv.get(i).getId()), "id");
+			p.setProperty(uv.get(i).getUsername(), "username");
+			p.setProperty(uv.get(i).getChatId(), "chatid");
+			p.setProperty(uv.get(i).getIsAdmin().toString(), "isadmin");
+			p.setProperty(uv.get(i).getIsAuth().toString(), "isauth");
+			p.setProperty(uv.get(i).getIsSub().toString(), "issub");
+			p.setProperty(String.valueOf(uv.get(i).getHours()), "hours");
 			
 			p.store(out, null);
 		};
@@ -130,6 +106,7 @@ public class Prop {
 				in = new FileInputStream(file);
 				userProps.load(in);
 				userVectProps.addElement(userProps);
+				System.out.println("Loading user " + userProps.getProperty("id"));
 			}
 			in.close();
 		}
@@ -147,26 +124,72 @@ public class Prop {
 
 	public void initialize() {
 
+		
+		//Define runnables used as a separated thread prop updaters
+		sysUpdater = new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					sysUpdater();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("sysupdater error\n");
+				}
+				
+			}
+		};
+		
+		userUpdater = new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					userUpdater();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("userupdate error");
+				}
+				
+			}
+		};
+		
+		
+		
 		System.out.println("Loading system configuration");
-		if (noConfig()){
+		//This is the point where the system knows whether is the first time it's turned on or not
+		//All relative logic should be placed here
+		//Note that the default config is not saved yet, this is because it should be saved ONLY after a successful new (first) user
+		//TODO save defaults after first user
+		if (noConfig()){ 
 			System.out.println("No configuration found, switching to default");
 			Session.currentSession().setSysProps(defaults());
+			Session.currentSession().getHandler().setCurrentContext(FirstTOnContext.getInstance());
+			
 			//TODO link to logic first turn on, first user
 		} else {
-				try {
+			try {
 				loadSysProps();
-				loadUsersProps();
+				//if first turn on no user should be loaded
+				if (!noConfig()){
+					loadUsersProps();
+				}
 				} catch (IOException e) { e.printStackTrace(); }
 				UserManager.getInstance().buildFromProps();
-				
-//				token=SysProps.getProperty("token");
-//				kwhcost=Float.parseFloat(SysProps.getProperty("kwhcost"));
-//				isMonitored=(Integer.parseInt(SysProps.getProperty("isMonitored")) != 0);
-
 
 		}
 		System.out.println("Done\n");
 
+	}
+
+	public Runnable getSysUpdater() {
+		return sysUpdater;
+	}
+
+	public Runnable getUserUpdater() {
+		return userUpdater;
 	}
 
 	

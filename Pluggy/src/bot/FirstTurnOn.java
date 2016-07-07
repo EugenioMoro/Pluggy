@@ -10,7 +10,10 @@ import model.User;
 
 public class FirstTurnOn extends TelegramLongPollingBot {
 
-	private String stage="zero";
+	private Boolean inContext=false;
+	
+	private final static int i=1;
+	
 	
 	@Override
 	public String getBotUsername() {
@@ -24,28 +27,28 @@ public class FirstTurnOn extends TelegramLongPollingBot {
 		m.setChatId(update.getMessage().getChatId().toString());
 		User u = new User();
 		
-		switch (stage){
-		case "zero":
-			m.setText("Testing start: insert username:");
-			stage = "username";
-			try {
-				sendMessage(m);
-			} catch (TelegramApiException e) { e.printStackTrace(); }
-		case "username":
-			u.setUsername(update.getMessage().getText());
-			u.setChatId(update.getMessage().getChatId().toString());
-			//u.setId(update.getMessage().getContact().getUserID());
-			m.setText("Username got, set privileges, done");
-			try {
-				sendMessage(m);
-				stage="third";
-			} catch (TelegramApiException e) { e.printStackTrace(); }
-		case "third":
-			m.setText("third");
-			try {
-				sendMessage(m);
-				stage="zero";
-			} catch (TelegramApiException e) { e.printStackTrace(); }
+//		switch (){
+//		case "zero":
+//			m.setText("Testing start: insert username:");
+//			
+//			try {
+//				sendMessage(m);
+//			} catch (TelegramApiException e) { e.printStackTrace(); }
+//		case "username":
+//			u.setUsername(update.getMessage().getText());
+//			u.setChatId(update.getMessage().getChatId().toString());
+//			//u.setId(update.getMessage().getContact().getUserID());
+//			m.setText("Username got, set privileges, done");
+//			try {
+//				sendMessage(m);
+//				
+//			} catch (TelegramApiException e) { e.printStackTrace(); }
+//		case "third":
+//			m.setText("third");
+//			try {
+//				sendMessage(m);
+//				
+//			} catch (TelegramApiException e) { e.printStackTrace(); }
 			
 		}
 //		 if(update.hasMessage()){
@@ -67,7 +70,7 @@ public class FirstTurnOn extends TelegramLongPollingBot {
 //     }//end  if()
 
 		
-	}
+	
 
 	@Override
 	public String getBotToken() {

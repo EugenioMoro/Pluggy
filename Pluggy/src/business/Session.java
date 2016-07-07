@@ -3,6 +3,7 @@ package business;
 import java.util.Properties;
 import java.util.Vector;
 
+import bot.UpdatesHandler;
 import model.User;
 
 public class Session {
@@ -13,6 +14,7 @@ public class Session {
 	private Vector<User> users = new Vector<User>();
 	private Properties SysProps = new Properties();
 	private Vector<Properties> userVectProps = new Vector<Properties>();
+	private UpdatesHandler handler = new UpdatesHandler();
 	
 	
 	
@@ -35,7 +37,7 @@ public class Session {
 
 	public void setToken(String token) {
 		SysProps.setProperty("token", token);
-		Prop.getInstance().updateSys();
+		Prop.getInstance().getSysUpdater().run();
 	}
 
 
@@ -46,7 +48,7 @@ public class Session {
 
 	public void setKwhcost(float kwhcost) {
 		SysProps.setProperty("kwhcost", Float.toString(kwhcost));
-		Prop.getInstance().updateSys();
+		Prop.getInstance().getSysUpdater().run();
 	}
 
 
@@ -57,7 +59,7 @@ public class Session {
 
 	public void setIsMonitored(Boolean isMonitored) {
 		SysProps.setProperty("ismonitored", Boolean.toString(isMonitored));
-		Prop.getInstance().updateSys();
+		Prop.getInstance().getSysUpdater().run();
 	}
 
 
@@ -83,6 +85,18 @@ public class Session {
 
 	public void setUserVectProps(Vector<Properties> userVectProps) {
 		this.userVectProps = userVectProps;
+	}
+
+
+
+	public UpdatesHandler getHandler() {
+		return handler;
+	}
+
+
+
+	public void setHandler(UpdatesHandler handler) {
+		this.handler = handler;
 	}
 
 }

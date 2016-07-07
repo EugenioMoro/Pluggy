@@ -18,7 +18,7 @@ public class UserManager {
 	
 	public void addUser(User u){
 		Session.currentSession().getUsers().add(u);
-		Prop.getInstance().updateUsers();
+		Prop.getInstance().getUserUpdater().run();
 	}
 	
 	public void buildFromProps(){
@@ -26,14 +26,14 @@ public class UserManager {
 		User u = new User();
 		Iterator<Properties> i = Session.currentSession().getUserVectProps().iterator();
 		while (i.hasNext()){
-
-			u.setId(Integer.parseInt(((Properties) i.next()).getProperty("id")));
-			u.setUsername(((Properties) i.next()).getProperty("username"));
-			u.setChatId(((Properties) i.next()).getProperty("chatid"));
-			u.setIsAdmin(Integer.parseInt(((Properties) i.next()).getProperty("isadmin")) != 0);
-			u.setIsAuth(Integer.parseInt(((Properties) i.next()).getProperty("isauth")) != 0);
-			u.setIsSub(Integer.parseInt(((Properties) i.next()).getProperty("issub")) != 0);
-			u.setHours(Integer.parseInt(((Properties) i.next()).getProperty("hours")));
+			Properties p = new Properties(i.next());
+			u.setId(Integer.parseInt(((Properties) p).getProperty("id")));
+			u.setUsername(((Properties) p).getProperty("username"));
+			u.setChatId(((Properties) p).getProperty("chatid"));
+			u.setIsAdmin(Integer.parseInt(((Properties) p).getProperty("isadmin")) != 0);
+			u.setIsAuth(Integer.parseInt(((Properties) p).getProperty("isauth")) != 0);
+			u.setIsSub(Integer.parseInt(((Properties) p).getProperty("issub")) != 0);
+			u.setHours(Integer.parseInt(((Properties) p).getProperty("hours")));
 
 			Session.currentSession().getUsers().addElement(u);
 		}

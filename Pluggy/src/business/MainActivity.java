@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 
-import bot.FirstTurnOn;
-
 public class MainActivity {
 
 	public static void main(String[] args) throws InterruptedException, IOException {
@@ -21,7 +19,7 @@ public class MainActivity {
 		//system ready, simulating first turn on
 		 TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 		 try {
-			 telegramBotsApi.registerBot(new FirstTurnOn());
+			 telegramBotsApi.registerBot(Session.currentSession().getHandler());
 		 } catch (TelegramApiException e) { e.printStackTrace(); }
 		
 		
