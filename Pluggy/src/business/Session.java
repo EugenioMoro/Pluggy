@@ -15,6 +15,7 @@ public class Session {
 	private Properties SysProps = new Properties();
 	private Vector<Properties> userVectProps = new Vector<Properties>();
 	private UpdatesHandler handler = new UpdatesHandler();
+	private Boolean isFirstTurnOn = false;
 	
 	
 	
@@ -97,6 +98,24 @@ public class Session {
 
 	public void setHandler(UpdatesHandler handler) {
 		this.handler = handler;
+	}
+
+
+
+	/**
+	 * @return the isFirstTurnOn
+	 */
+	public Boolean isFirstTurnOn() {
+		return isFirstTurnOn;
+	}
+
+
+
+	/**
+	 * @param isFirstTurnOn the isFirstTurnOn to set
+	 */
+	public void setIsFirstTurnOn(Boolean isFirstTurnOn) {
+		this.isFirstTurnOn = isFirstTurnOn;
 	}
 
 }

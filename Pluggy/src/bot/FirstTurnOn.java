@@ -1,18 +1,14 @@
 package bot;
 
-import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import business.Session;
-import model.User;
 
 public class FirstTurnOn extends TelegramLongPollingBot {
 
-	private Boolean inContext=false;
-	
-	private final static int i=1;
+
 	
 	
 	@Override
@@ -25,7 +21,7 @@ public class FirstTurnOn extends TelegramLongPollingBot {
 		System.out.println("update recived");
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());
-		User u = new User();
+
 		
 //		switch (){
 //		case "zero":

@@ -13,9 +13,9 @@ public class MainActivity {
 		
 		//temporary testing code:
 		Session.currentSession();
-		System.out.println("session done");
+		System.out.println("Session Initalized");
 		Prop.getInstance();
-		System.out.println("prop done");
+		System.out.println("Properties initialized");
 		//system ready, simulating first turn on
 		 TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 		 try {

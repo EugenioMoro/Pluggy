@@ -5,11 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
-import botContexts.FirstTOnContext;
 import model.User;
 
 public class Prop {
@@ -26,9 +24,7 @@ public class Prop {
 	}
 	
 	public Prop() {
-		System.out.println("Initializing props");
 		initialize();
-		System.out.println("\ninit done");
 	}
 	
 	private Properties defaults(){
@@ -57,7 +53,7 @@ public class Prop {
 
 	private void userUpdater() throws IOException{
 		Vector<User> uv = Session.currentSession().getUsers();
-		System.out.print(Session.currentSession().getUsers().size());
+		System.out.println(Session.currentSession().getUsers().size() + "users found");
 		FileOutputStream out = null;
 		Properties p = new Properties();
 		int i;
@@ -166,7 +162,7 @@ public class Prop {
 		if (noConfig()){ 
 			System.out.println("No configuration found, switching to default");
 			Session.currentSession().setSysProps(defaults());
-			Session.currentSession().getHandler().setCurrentContext(FirstTOnContext.getInstance());
+			Session.currentSession().setIsFirstTurnOn(true);
 			
 			//TODO link to logic first turn on, first user
 		} else {
@@ -180,7 +176,7 @@ public class Prop {
 				UserManager.getInstance().buildFromProps();
 
 		}
-		System.out.println("Done\n");
+		System.out.println("Properties loaded");
 
 	}
 

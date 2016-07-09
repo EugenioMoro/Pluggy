@@ -1,5 +1,7 @@
 package model;
 
+import botContexts.context;
+
 public class User {
 
 	private int id;
@@ -9,6 +11,10 @@ public class User {
 	private Boolean isAuth;
 	private Boolean isSub;
 	private int hours;
+	
+	private context currentContext;
+	private Boolean canReply=true;
+	private Boolean isInContext=false;
 	
 	public int getId() {
 		return id;
@@ -51,6 +57,42 @@ public class User {
 	}
 	public void setHours(int hours) {
 		this.hours = hours;
+	}
+	/**
+	 * @return the currentContext
+	 */
+	public context getCurrentContext() {
+		return currentContext;
+	}
+	/**
+	 * @param currentContext the currentContext to set
+	 */
+	public void setCurrentContext(context currentContext) {
+		this.currentContext = currentContext;
+	}
+	/**
+	 * @return the canReply
+	 */
+	public Boolean canReply() {
+		return canReply;
+	}
+	/**
+	 * @param canReply the canReply to set
+	 */
+	public void setCanReply(Boolean canReply) {
+		this.canReply = canReply;
+	}
+	/**
+	 * @return the isInContext
+	 */
+	public Boolean isInContext() {
+		return isInContext;
+	}
+	/**
+	 * @param isInContext the isInContext to set
+	 */
+	public void setIsInContext(Boolean isInContext) {
+		this.isInContext = isInContext;
 	}
 	
 	

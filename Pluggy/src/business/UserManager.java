@@ -39,4 +39,16 @@ public class UserManager {
 		}
 	}
 	
+	public User getUserById(int id){
+		if (Session.currentSession().getUsers().isEmpty()){
+			return null;
+		}
+		for(int i=0; i<Session.currentSession().getUsers().size(); i++){
+			if(Session.currentSession().getUsers().get(i).getId()==id){
+				return Session.currentSession().getUsers().get(i);
+			}
+		}
+		return null;
+	}
+	
 }
