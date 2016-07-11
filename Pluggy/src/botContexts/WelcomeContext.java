@@ -6,7 +6,6 @@ import org.telegram.telegrambots.api.objects.Update;
 
 import business.Prop;
 import business.Session;
-import business.UserManager;
 import model.User;
 
 public class WelcomeContext implements context {
@@ -50,6 +49,7 @@ public class WelcomeContext implements context {
 					subscription(update);
 				}
 			});
+			break;
 		case KWHCOST:
 			worker = new Thread(new Runnable() {
 				public void run() {
@@ -178,7 +178,7 @@ public class WelcomeContext implements context {
 	
 	private void username(Update update){
 		u.setUsername(update.getMessage().getText());
-		u.setChatId(update.getMessage().getChatId().toString());
+		u.setChatId(update.getMessage().getChatId());
 		u.setIsAdmin(true);
 		u.setIsAuth(true);
 		u.setIsSub(false);
@@ -218,10 +218,24 @@ public class WelcomeContext implements context {
 			u.setIsSub(true);
 			stage++;
 			u.setCanReply(false);
+			//execute next stage
+			worker = new Thread(new Runnable() {
+				public void run() {
+					kwhcost(update);
+				}
+			});
+			worker.start();
 		} else if (update.getMessage().getText().equalsIgnoreCase("no")){
 			u.setIsSub(false);
 			stage++;
 			u.setCanReply(false);
+			//execute next stage
+			worker = new Thread(new Runnable() {
+				public void run() {
+					kwhcost(update);
+				}
+			});
+			worker.start();
 		} else {
 			try {
 				synchronized (lock) { lock.wait(1000);}
@@ -263,7 +277,7 @@ public class WelcomeContext implements context {
 		}
 		
 		if (Session.currentSession().isFirstTurnOn()){
-			m.setText("Now I need to know how much does a kilowatt per hour costs. You could check it in your last bill (I will wait for you fo find it), or just give me a standard value like 0,161668");
+			m.setText("Now I need to know how much does a kilowatt per hour costs, so I can tell you how much you will spend. You could check it in your last bill (I will wait for you fo find it), or just give me a standard value like 0,161668");
 			try {
 				Session.currentSession().getHandler().sendMessage(m);
 			} catch (TelegramApiException e) {
@@ -288,16 +302,31 @@ public class WelcomeContext implements context {
 		if (Session.currentSession().isFirstTurnOn()){
 			Session.currentSession().getSysProps().setProperty("kwhcost", update.getMessage().getText());
 			Prop.getInstance().getSysUpdater().run();
+			u.setIsAdmin(true);
+			u.setIsAuth(true);
 		}
-		u.setIsInContext(false);
-		u.setCanReply(true);
-		UserManager.getInstance().addUser(u);
+		
+		abort();
+		
+		Prop.getInstance().getUserUpdater().run();
+		
+		SendMessage m = new SendMessage();
+		m.setChatId(update.getMessage().getChatId().toString());
+		m.setText("All done");
+		try {
+			Session.currentSession().getHandler().sendMessage(m);
+		} catch (TelegramApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			abort();
+		}
 	}
 	
 	@Override
 	public void abort() {
 		u.setIsInContext(false);
-		u.setCanReply(true);		
+		u.setCanReply(true);
+		u.setCurrentContext(null);
 	}
 
 

@@ -1,5 +1,7 @@
 package bot;
 
+import org.telegram.telegrambots.TelegramApiException;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
@@ -29,11 +31,11 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 			if(u == null){
 				//if so: create new, set welcome as a context 
 				u = new User();
-				u.setId(update.getMessage().getFrom().getId());
+				u.setChatId(update.getMessage().getChatId());
 				u.setCurrentContext(new WelcomeContext(u));
 				u.setIsInContext(true);
 				Session.currentSession().getUsers().add(u);
-				System.out.println("User " + u.getId() +" is new, setting welcome context");
+				System.out.println("User " + u.getChatId() +" is new, setting welcome context");
 			}
 			
 			//check if expecting reply
@@ -44,13 +46,28 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 				//check if user is in context, if not interpret message and assign context
 				if(!u.isInContext()){
 					//TODO interpreter logic
-					System.out.println("No active context for user " + u.getId() + " - interpreting...");
+					System.out.println("No active context for user " + u.getChatId() + " - interpreting...");
+					if (update.getMessage().isCommand()){
+						CommandHandler.getInstance().commandInterpreter(update);
+					} else {
+						SendMessage m = new SendMessage();
+						m.setChatId(update.getMessage().getChatId().toString());
+						m.setText("Sorry, I did not understand. Can you use one of these? /help /consumes /settings");
+						try {
+							Session.currentSession().getHandler().sendMessage(m);
+						} catch (TelegramApiException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 
 				}
 
 				//this should be the last thing to be called
-				u.getCurrentContext().work(update);
-				System.out.println("Update dispatched to worker");
+				if(u.getCurrentContext() != null){
+					u.getCurrentContext().work(update);
+					System.out.println("Update dispatched to worker");
+				}
 			}
 		}
 	}

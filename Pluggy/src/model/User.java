@@ -4,11 +4,10 @@ import botContexts.context;
 
 public class User {
 
-	private int id;
 	private String username;
-	private String chatId;
-	private Boolean isAdmin;
-	private Boolean isAuth;
+	private long chatId;
+	private Boolean isAdmin=false;
+	private Boolean isAuth=false;
 	private Boolean isSub;
 	private int hours;
 	
@@ -16,22 +15,18 @@ public class User {
 	private Boolean canReply=true;
 	private Boolean isInContext=false;
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+
+
 	public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getChatId() {
+	public long getChatId() {
 		return chatId;
 	}
-	public void setChatId(String chatId) {
+	public void setChatId(long chatId) {
 		this.chatId = chatId;
 	}
 	public Boolean getIsAdmin() {

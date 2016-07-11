@@ -59,15 +59,15 @@ public class Prop {
 		int i;
 		try {
 		for(i=0; i<uv.size(); i++){
-			out = new FileOutputStream("usr" + String.valueOf(uv.get(i).getId()));
+			out = new FileOutputStream("usr" + String.valueOf(uv.get(i).getChatId()));
 			
-			p.setProperty(String.valueOf(uv.get(i).getId()), "id");
-			p.setProperty(uv.get(i).getUsername(), "username");
-			p.setProperty(uv.get(i).getChatId(), "chatid");
-			p.setProperty(uv.get(i).getIsAdmin().toString(), "isadmin");
-			p.setProperty(uv.get(i).getIsAuth().toString(), "isauth");
-			p.setProperty(uv.get(i).getIsSub().toString(), "issub");
-			p.setProperty(String.valueOf(uv.get(i).getHours()), "hours");
+			p.setProperty("username", uv.get(i).getUsername());
+			p.setProperty("chatid", String.valueOf(uv.get(i).getChatId()));
+			p.setProperty("issub", uv.get(i).getIsSub().toString());
+			p.setProperty("hours", String.valueOf(uv.get(i).getHours()));
+			p.setProperty("isadmin", uv.get(i).getIsAdmin().toString());
+			p.setProperty("isauth", uv.get(i).getIsAdmin().toString());
+			System.out.println(p.toString());
 			
 			p.store(out, null);
 		};
@@ -102,7 +102,7 @@ public class Prop {
 				in = new FileInputStream(file);
 				userProps.load(in);
 				userVectProps.addElement(userProps);
-				System.out.println("Loading user " + userProps.getProperty("id"));
+				System.out.println("Loading user " + userProps.getProperty("chatid"));
 			}
 			in.close();
 		}
