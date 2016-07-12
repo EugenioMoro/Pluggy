@@ -4,6 +4,7 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
+import business.HistoryManager;
 import business.Session;
 import dao.dummyConsumes;
 
@@ -62,7 +63,7 @@ public class CommandHandler {
 		
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());
-		m.setText(String.valueOf(dummyConsumes.getInstance().getConsumes()));
+		m.setText(String.valueOf(HistoryManager.getInstance().getInstantConsumes()));
 		try {
 			Session.currentSession().getHandler().sendMessage(m);
 		} catch (TelegramApiException e) {
