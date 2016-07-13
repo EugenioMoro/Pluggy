@@ -51,7 +51,7 @@ public class Prop {
 		} catch (IOException e){ e.printStackTrace(); }
 	}
 
-	private void userUpdater() throws IOException{
+	public void userUpdater() throws IOException{
 		Vector<User> uv = Session.currentSession().getUsers();
 		System.out.println(Session.currentSession().getUsers().size() + "users found");
 		FileOutputStream out = null;
@@ -59,14 +59,14 @@ public class Prop {
 		int i;
 		try {
 		for(i=0; i<uv.size(); i++){
-			out = new FileOutputStream("usr" + String.valueOf(uv.get(i).getChatId()));
+			out = new FileOutputStream("usr" + String.valueOf(uv.get(i).getId()));
 			
 			p.setProperty("username", uv.get(i).getUsername());
-			p.setProperty("chatid", String.valueOf(uv.get(i).getChatId()));
+			p.setProperty("chatid", String.valueOf(uv.get(i).getId()));
 			p.setProperty("issub", uv.get(i).getIsSub().toString());
 			p.setProperty("hours", String.valueOf(uv.get(i).getHours()));
 			p.setProperty("isadmin", uv.get(i).getIsAdmin().toString());
-			p.setProperty("isauth", uv.get(i).getIsAdmin().toString());
+			p.setProperty("isauth", uv.get(i).getIsAuth().toString());
 			System.out.println(p.toString());
 			
 			p.store(out, null);
@@ -82,7 +82,6 @@ public class Prop {
 
 	private void loadUsersProps() throws IOException{
 		try {
-			Vector<Properties> userVectProps = Session.currentSession().getUserVectProps();
 			//Retrive working directory
 			File dir = new File(System.getProperty("user.dir").toString());
 
@@ -96,14 +95,17 @@ public class Prop {
 			});
 
 			//load properties from files retrived
-			Properties userProps = new Properties();
 			FileInputStream in = null;
 			for (File file : foundConf){
 				in = new FileInputStream(file);
-				userProps.load(in);
-				userVectProps.addElement(userProps);
-				System.out.println("Loading user " + userProps.getProperty("chatid"));
+				//userProps.load(in);
+				Properties p = new Properties();
+				p.load(in);
+				System.out.println(p.toString());
+				Session.currentSession().getUserVectProps().add(p);
+				System.out.println("Loading user " + p.getProperty("chatid"));
 			}
+			System.out.println(Session.currentSession().getUserVectProps().toString());
 			in.close();
 		}
 		catch (IOException e) { e.printStackTrace(); }
@@ -187,6 +189,5 @@ public class Prop {
 	public Runnable getUserUpdater() {
 		return userUpdater;
 	}
-
 	
 }

@@ -20,17 +20,18 @@ public class SerialCommunication implements SerialPortEventListener{
 	};
 	private static final int TIME_OUT = 2000;
 	private final static int BAUD_RATE = 9600;
+	private static int wattConsumes;
 
 	private BufferedReader input;
 	
+	public static int getConsumes(){
+		return wattConsumes;
+	}
 
 
 	public void initialize(){
 		
-		//check if is raspbian
-		if (System.getProperties().getProperty("os.name").equalsIgnoreCase("windows 10")){
-			System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
-		}
+		
 
 		System.out.println("Initializing serial connection");
 		CommPortIdentifier portId = null;
@@ -88,9 +89,14 @@ public class SerialCommunication implements SerialPortEventListener{
 		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				String inputLine=input.readLine();
-				if (inputLine.equalsIgnoreCase("cal")){
-					long consumes = Long.parseLong(inputLine);
-					HistoryManager.getInstance().setInstantConsumes((int) (consumes +0.5));
+				if (!inputLine.equalsIgnoreCase("cal")){
+					float amperes = Float.valueOf(inputLine);
+					//there is some offset that can't be calibrated by arduino, empirically 0.03 amps
+					if (amperes>=0.03){
+					HistoryManager.getInstance().setNewConsumes(((int) (amperes*220 +0.5)));
+					} else {
+						HistoryManager.getInstance().setNewConsumes(0);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

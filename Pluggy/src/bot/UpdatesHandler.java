@@ -31,11 +31,11 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 			if(u == null){
 				//if so: create new, set welcome as a context 
 				u = new User();
-				u.setChatId(update.getMessage().getChatId());
+				u.setId(update.getMessage().getFrom().getId());
 				u.setCurrentContext(new WelcomeContext(u));
 				u.setIsInContext(true);
 				Session.currentSession().getUsers().add(u);
-				System.out.println("User " + u.getChatId() +" is new, setting welcome context");
+				System.out.println("User " + u.getId() +" is new, setting welcome context");
 			}
 			
 			//check if expecting reply
@@ -46,7 +46,7 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 				//check if user is in context, if not interpret message and assign context
 				if(!u.isInContext()){
 					//TODO interpreter logic
-					System.out.println("No active context for user " + u.getChatId() + " - interpreting...");
+					System.out.println("No active context for user " + u.getId() + " - interpreting...");
 					if (update.getMessage().isCommand()){
 						CommandHandler.getInstance().commandInterpreter(update);
 					} else {

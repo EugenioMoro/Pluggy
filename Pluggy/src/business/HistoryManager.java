@@ -1,51 +1,62 @@
 package business;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 public class HistoryManager {
 	
 	private static HistoryManager instance;
 	
-	private int hourCount;
-	private int dayCount;
-	private int totalCount;
-	private int instantConsumes;
+	private int hourCount=0;
+	private int dayCount=0;
+	private int totalCount=0;
+	private int instantConsumes=0;
 	private int toHoursCount=0;
 	private int toDayCount=0;
-	private ScheduledExecutorService countsUpdater;
+	private Boolean showHours=false;
+	private Boolean showDay=false;
+
+	
 	
 	public static HistoryManager getInstance(){
 		if (instance==null){
 			instance = new HistoryManager();
-			
-			//runnable update counters logic to be scheduled
-			Runnable update = new Runnable() {
-				
-				@Override
-				public void run() {
-					if (instance.toHoursCount >= 3600){
-						instance.dayCount=instance.dayCount+instance.hourCount;
-						instance.hourCount=0;
-					}
-					if(instance.toDayCount>=24){
-						instance.totalCount=instance.totalCount+instance.dayCount;
-						instance.dayCount=0;
-					}
-					
-				}
-			};
-			instance.countsUpdater = Executors.newSingleThreadScheduledExecutor();
-			instance.countsUpdater.scheduleWithFixedDelay(update, 50, 5, TimeUnit.MINUTES);
 		}
 		return instance;
 	}
 	
 	
-
-	public void notifyWattConsumes(long consumes){
-		
+	public void setNewConsumes(int wattConsumes){
+		instantConsumes=wattConsumes;
+		hourCount=hourCount+instantConsumes;
+		toHoursCount++;
+		if (toHoursCount >= 3600){
+			dayCount=dayCount+hourCount;
+			hourCount=0;
+			toDayCount++;
+		}
+		if(toDayCount>=24){
+			totalCount=totalCount+dayCount;
+			dayCount=0;
+			showDay=true;
+		}
+	}
+	
+	public String getConsumesHistoryMessage(){
+		String s = new String();
+		s=("In the last " + toHoursCount/60+ " minutes I consumed ");
+		if (hourCount/toHoursCount>=1000){
+			s=s+(hourCount/(1000*toHoursCount) + " kilowatts per second.");
+		} else {
+			s=s+(hourCount/toHoursCount + " watts per second.");
+		}
+		if(toDayCount>0){
+			s=s+("In the last " + toDayCount + "hours I consumed ");
+			if (dayCount/toDayCount>=1000){
+				s=s+(dayCount/(1000*toDayCount) + " kilowatts per hour ");
+			} else {
+				s=s+(dayCount/toDayCount + " watts per hour ");
+			}
+			s=s+("at a cost of " + (dayCount/3600000)*Session.currentSession().getKwhcost() + " euros");
+		}
+		return s;
 	}
 	
 	public int getInstantConsumes(){
@@ -83,6 +94,30 @@ public class HistoryManager {
 
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
+	}
+
+
+
+	public Boolean getShowHours() {
+		return showHours;
+	}
+
+
+
+	public void setShowHours(Boolean showHours) {
+		this.showHours = showHours;
+	}
+
+
+
+	public Boolean getShowDay() {
+		return showDay;
+	}
+
+
+
+	public void setShowDay(Boolean showDay) {
+		this.showDay = showDay;
 	}
 
 }

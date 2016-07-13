@@ -6,6 +6,7 @@ import org.telegram.telegrambots.api.objects.Update;
 
 import business.Prop;
 import business.Session;
+import business.UserManager;
 import model.User;
 
 public class WelcomeContext implements context {
@@ -177,15 +178,19 @@ public class WelcomeContext implements context {
 
 	
 	private void username(Update update){
-		u.setUsername(update.getMessage().getText());
-		u.setChatId(update.getMessage().getChatId());
-		u.setIsAdmin(true);
-		u.setIsAuth(true);
+
+		if(Session.currentSession().isFirstTurnOn()){
+			u.setIsAdmin(true);
+			u.setIsAuth(true);
+		}
+
 		u.setIsSub(false);
 		u.setHours(1);
 		
 		SendMessage m = new SendMessage();
-		
+		if(UserManager.getInstance().getUserByName(update.getMessage().getText())==null){
+		u.setUsername(update.getMessage().getText());
+		u.setId(update.getMessage().getChatId());
 		m.setChatId(update.getMessage().getChatId().toString());
 		m.setText("Very well, from now on I shall call you " + u.getUsername());
 		try {
@@ -211,6 +216,17 @@ public class WelcomeContext implements context {
 			abort();
 		}
 		stage++;
+		} else {
+			m.setChatId(update.getMessage().getChatId().toString());
+			m.setText("I'm sorry, this username is already taken. Can you choose another one please?");
+			try {
+				Session.currentSession().getHandler().sendMessage(m);
+			} catch (TelegramApiException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				abort();
+			}
+		}
 	}
 
 	private void subscription(Update update){ //should know if is first turn on and act in consequence
@@ -277,7 +293,7 @@ public class WelcomeContext implements context {
 		}
 		
 		if (Session.currentSession().isFirstTurnOn()){
-			m.setText("Now I need to know how much does a kilowatt per hour costs, so I can tell you how much you will spend. You could check it in your last bill (I will wait for you fo find it), or just give me a standard value like 0,161668");
+			m.setText("Now I need to know how much does a kilowatt per hour costs, so I can tell you how much you will spend. You could check it in your last bill (I will wait for you fo find it), or just give me a standard value like 0.161668");
 			try {
 				Session.currentSession().getHandler().sendMessage(m);
 			} catch (TelegramApiException e) {
@@ -292,9 +308,12 @@ public class WelcomeContext implements context {
 				e.printStackTrace();
 			}
 			u.setCanReply(true);
+			stage++;
 			
+		} else {
+			finalStage(update);
 		}
-		stage++;
+		
 	}
 	
 	private void finalStage(Update update){
@@ -312,7 +331,12 @@ public class WelcomeContext implements context {
 		
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());
-		m.setText("All done");
+		if (Session.currentSession().isFirstTurnOn()){
+			Session.currentSession().setIsFirstTurnOn(false);
+			m.setText("Ok, we are done. As my first user, you are and administrator of this system. If you want more info about, just click /security. You are in charge of setting the security level of the other users from now on, as they are set on the lowest level as a default. If you are lost, click /help");
+		} else {
+			m.setText("Ok, we are done. Now you need the owner of this plug to allow you to see consumes and history, just tell him. Click /security and /help for more");
+		}
 		try {
 			Session.currentSession().getHandler().sendMessage(m);
 		} catch (TelegramApiException e) {

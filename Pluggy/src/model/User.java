@@ -5,7 +5,7 @@ import botContexts.context;
 public class User {
 
 	private String username;
-	private long chatId;
+	private long id;
 	private Boolean isAdmin=false;
 	private Boolean isAuth=false;
 	private Boolean isSub;
@@ -23,11 +23,11 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public long getChatId() {
-		return chatId;
+	public long getId() {
+		return id;
 	}
-	public void setChatId(long chatId) {
-		this.chatId = chatId;
+	public void setId(long id) {
+		this.id = id;
 	}
 	public Boolean getIsAdmin() {
 		return isAdmin;

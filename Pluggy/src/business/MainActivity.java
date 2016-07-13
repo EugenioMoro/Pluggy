@@ -21,6 +21,7 @@ public class MainActivity {
 		//initialize and load properties
 		Prop.getInstance();
 		System.out.println("Properties initialized");
+		HistoryManager.getInstance();
 		
 		//initializing arduino serial connection
 		SerialCommunication serial = new SerialCommunication();
