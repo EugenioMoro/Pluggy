@@ -4,6 +4,7 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
+import botContexts.KwhSettingsContext;
 import botContexts.SecurityContext;
 import business.HistoryManager;
 import business.SecurityManager;
@@ -44,10 +45,14 @@ public class CommandHandler {
 		case "/securitysettings":
 			UserManager.getInstance().getUserById(update.getMessage().getChatId()).setCurrentContext(new SecurityContext(UserManager.getInstance().getUserById(update.getMessage().getChatId())));
 			break;
+		case "/settings":
+			UserManager.getInstance().getUserById(update.getMessage().getFrom().getId()).setCurrentContext(new KwhSettingsContext(UserManager.getInstance().getUserById(update.getMessage().getFrom().getId())));
+			break;
 		default:
 			unrecognized(update);
 		}
 	}
+	
 	
 	public void SendHelp(Update update){
 		System.out.println("Help command, sending help");

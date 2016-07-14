@@ -43,7 +43,6 @@ public class UserManager {
 			return null;
 		}
 		for(int i=0; i<Session.currentSession().getUsers().size(); i++){
-			System.out.println(Session.currentSession().getUsers().get(i).getId());
 			if(Session.currentSession().getUsers().get(i).getId()==id){
 				
 				return Session.currentSession().getUsers().get(i);

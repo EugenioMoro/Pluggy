@@ -105,7 +105,6 @@ public class Prop {
 				Session.currentSession().getUserVectProps().add(p);
 				System.out.println("Loading user " + p.getProperty("chatid"));
 			}
-			System.out.println(Session.currentSession().getUserVectProps().toString());
 			in.close();
 		}
 		catch (IOException e) { e.printStackTrace(); }

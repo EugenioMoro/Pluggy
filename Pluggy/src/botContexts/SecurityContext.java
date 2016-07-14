@@ -124,7 +124,7 @@ public class SecurityContext implements context {
 			s="User " + us.getUsername() + " is authorized to see consumes. How woud you like to proceed?";
 			s=s+"Set as an /admin. /revoke all priviledges";
 		} else {
-			s="User " + us.getUsername() + "is not authorized. How would you like to proceed?";
+			s="User " + us.getUsername() + " is not authorized. How would you like to proceed?";
 			s=s+"Set as and /authorized user. Set as an /admin";
 		}
 		m.setText(s);
