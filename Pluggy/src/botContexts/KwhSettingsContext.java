@@ -35,7 +35,7 @@ public class KwhSettingsContext implements context {
 		u.setIsInContext(true);
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());
-		m.setText("Please, give me a value");
+		m.setText("The current value is" + Session.currentSession().getKwhcost() + " .Please, give me a new value");
 		try {
 			Session.currentSession().getHandler().sendMessage(m);
 		} catch (TelegramApiException e) {

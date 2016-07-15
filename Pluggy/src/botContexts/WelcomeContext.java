@@ -293,7 +293,7 @@ public class WelcomeContext implements context {
 		}
 		
 		if (Session.currentSession().isFirstTurnOn()){
-			m.setText("Now I need to know how much does a kilowatt per hour costs, so I can tell you how much you will spend. You could check it in your last bill (I will wait for you fo find it), or just give me a standard value like 0.161668");
+			m.setText("Now I need to know how much does a kilowatt per hour costs, so I can tell you how much you will spend. You could check it in your last bill (I will wait for you fo find it), or just give me a standard value like 0.16");
 			try {
 				Session.currentSession().getHandler().sendMessage(m);
 			} catch (TelegramApiException e) {
@@ -319,6 +319,23 @@ public class WelcomeContext implements context {
 	private void finalStage(Update update){
 		System.out.println("finalstage");
 		if (Session.currentSession().isFirstTurnOn()){
+			//see if valid number
+			try {
+				Float.parseFloat(update.getMessage().getText());
+				
+			} catch (NumberFormatException e){
+				SendMessage m = new SendMessage();
+				m.setChatId(update.getMessage().getChatId().toString());
+				m.setText("That was not a valid number, can you repeat please?");
+				try {
+					Session.currentSession().getHandler().sendMessage(m);
+				} catch (TelegramApiException e1) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					abort();
+				}
+				return;
+			}
 			Session.currentSession().getSysProps().setProperty("kwhcost", update.getMessage().getText());
 			Prop.getInstance().getSysUpdater().run();
 			u.setIsAdmin(true);
