@@ -17,7 +17,7 @@ public class UserManager {
 	
 	public void addUser(User u){
 		Session.currentSession().getUsers().add(u);
-		Prop.getInstance().getUserUpdater().run();
+		Prop.getInstance().userUpdater();
 	}
 	
 	public void buildFromProps(){

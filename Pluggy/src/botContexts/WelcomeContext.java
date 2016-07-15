@@ -337,14 +337,14 @@ public class WelcomeContext implements context {
 				return;
 			}
 			Session.currentSession().getSysProps().setProperty("kwhcost", update.getMessage().getText());
-			Prop.getInstance().getSysUpdater().run();
+			Prop.getInstance().sysUpdater();
 			u.setIsAdmin(true);
 			u.setIsAuth(true);
 		}
 		
 		abort();
 		
-		Prop.getInstance().getUserUpdater().run();
+		Prop.getInstance().userUpdater();
 		
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());

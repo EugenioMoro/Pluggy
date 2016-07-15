@@ -13,8 +13,7 @@ import model.User;
 public class Prop {
 
 	private static Prop instance = null;
-	private Runnable sysUpdater;
-	private Runnable userUpdater;
+
 
 	public static Prop getInstance(){
 		if (instance == null){
@@ -43,7 +42,7 @@ public class Prop {
 	
 
 
-	private void sysUpdater() throws IOException{
+	public void sysUpdater() {
 		try {
 			FileOutputStream out = new FileOutputStream("sysconf");
 			Session.currentSession().getSysProps().store(out, null);
@@ -51,7 +50,7 @@ public class Prop {
 		} catch (IOException e){ e.printStackTrace(); }
 	}
 
-	public void userUpdater() throws IOException{
+	public void userUpdater() {
 		Vector<User> uv = Session.currentSession().getUsers();
 		System.out.println(Session.currentSession().getUsers().size() + "users found");
 		FileOutputStream out = null;
@@ -122,39 +121,7 @@ public class Prop {
 	public void initialize() {
 
 		
-		//Define runnables used as a separated thread prop updaters
-		sysUpdater = new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					sysUpdater();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println("sysupdater error\n");
-				}
-				
-			}
-		};
-		
-		userUpdater = new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					userUpdater();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println("userupdate error");
-				}
-				
-			}
-		};
-		
-		
-		
+	
 		System.out.println("Loading system configuration");
 		//This is the point where the system knows whether is the first time it's turned on or not
 		//All relative logic should be placed here
@@ -181,12 +148,4 @@ public class Prop {
 
 	}
 
-	public Runnable getSysUpdater() {
-		return sysUpdater;
-	}
-
-	public Runnable getUserUpdater() {
-		return userUpdater;
-	}
-	
 }

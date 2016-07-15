@@ -154,7 +154,7 @@ public class SecurityContext implements context {
 			UserManager.getInstance().getUserByName(usernameToMod).setIsAuth(true);
 			break;
 		}
-		Prop.getInstance().getUserUpdater().run();
+		Prop.getInstance().userUpdater();;
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());
 		m.setText("All done");

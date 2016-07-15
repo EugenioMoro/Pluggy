@@ -38,7 +38,7 @@ public class Session {
 
 	public void setToken(String token) {
 		SysProps.setProperty("token", token);
-		Prop.getInstance().getSysUpdater().run();
+		Prop.getInstance().sysUpdater();
 	}
 
 
@@ -49,7 +49,7 @@ public class Session {
 
 	public void setKwhcost(float kwhcost) {
 		SysProps.setProperty("kwhcost", Float.toString(kwhcost));
-		Prop.getInstance().getSysUpdater().run();
+		Prop.getInstance().sysUpdater();
 	}
 
 
@@ -60,7 +60,7 @@ public class Session {
 
 	public void setIsMonitored(Boolean isMonitored) {
 		SysProps.setProperty("ismonitored", Boolean.toString(isMonitored));
-		Prop.getInstance().getSysUpdater().run();
+		Prop.getInstance().sysUpdater();
 	}
 
 

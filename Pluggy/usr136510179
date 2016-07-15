@@ -1,7 +1,7 @@
-#Wed Jul 13 22:07:21 CEST 2016
+#Fri Jul 15 13:02:40 CEST 2016
 hours=1
 chatid=136510179
 issub=true
-isadmin=false
+isadmin=true
 isauth=true
-username=Gabri
+username=Test
