@@ -1,5 +1,12 @@
 package business;
 
+/*
+ * This class manages an history of consumes
+ * Instant consumes are updated at every serial event from serial communication class
+ * The logic is pretty straightforward: average consume per minute are given in the last m minutes and it overflows every 59 minutes
+ * If the system is running for more than an hour, average consumes for the total uptime are given, along with costs
+ */
+
 public class HistoryManager {
 	
 	private static HistoryManager instance;
@@ -10,8 +17,7 @@ public class HistoryManager {
 	private int instantConsumes=0;
 	private int toHoursCount=0;
 	private int toDayCount=0;
-	private Boolean showHours=false;
-	private Boolean showDay=false;
+
 
 	
 	
@@ -23,6 +29,7 @@ public class HistoryManager {
 	}
 	
 	
+	//This method is called whenever a new consume update is available
 	public void setNewConsumes(int wattConsumes){
 		instantConsumes=wattConsumes;
 		hourCount=hourCount+instantConsumes;
@@ -35,7 +42,6 @@ public class HistoryManager {
 		if(toDayCount>=24){
 			totalCount=totalCount+dayCount;
 			dayCount=0;
-			showDay=true;
 		}
 	}
 	
@@ -94,30 +100,6 @@ public class HistoryManager {
 
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
-	}
-
-
-
-	public Boolean getShowHours() {
-		return showHours;
-	}
-
-
-
-	public void setShowHours(Boolean showHours) {
-		this.showHours = showHours;
-	}
-
-
-
-	public Boolean getShowDay() {
-		return showDay;
-	}
-
-
-
-	public void setShowDay(Boolean showDay) {
-		this.showDay = showDay;
 	}
 
 }

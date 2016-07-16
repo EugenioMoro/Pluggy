@@ -1,4 +1,4 @@
-package business;
+package dao;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,8 +8,17 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Vector;
 
+import business.Session;
+import business.UserManager;
 import model.User;
-
+/*
+ * This class provides methods to save-load properties
+ * When initialized, it checks if the system is turned on for the first time and loads (defaults if first turn on)
+ * sys settings and user, saving it in Session. UserManager is meant to build users from every userprop loaded here
+ * 
+ * Updating methods are called whenever there is a change or new sys or user parameter that needs to be saved
+ * They pretty much just save everything, so it's not very efficient
+ */
 public class Prop {
 
 	private static Prop instance = null;
@@ -37,11 +46,6 @@ public class Prop {
 		
 	}
 	
-
-	
-	
-
-
 	public void sysUpdater() {
 		try {
 			FileOutputStream out = new FileOutputStream("sysconf");
@@ -74,11 +78,10 @@ public class Prop {
 		} catch (IOException e){ e.printStackTrace(); }
 	}
 	
-	public Boolean noConfig(){
+	private Boolean noConfig(){
 		return !(new File("sysconf")).exists();
 	}
 	
-
 	private void loadUsersProps() throws IOException{
 		try {
 			//Retrive working directory
@@ -126,13 +129,10 @@ public class Prop {
 		//This is the point where the system knows whether is the first time it's turned on or not
 		//All relative logic should be placed here
 		//Note that the default config is not saved yet, this is because it should be saved ONLY after a successful new (first) user
-		//TODO save defaults after first user
 		if (noConfig()){ 
 			System.out.println("No configuration found, switching to default");
 			Session.currentSession().setSysProps(defaults());
 			Session.currentSession().setIsFirstTurnOn(true);
-			
-			//TODO link to logic first turn on, first user
 		} else {
 			try {
 				loadSysProps();

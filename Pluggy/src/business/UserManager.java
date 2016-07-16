@@ -2,6 +2,7 @@ package business;
 
 import java.util.Properties;
 
+import dao.Prop;
 import model.User;
 
 public class UserManager {

@@ -4,6 +4,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import bot.UpdatesHandler;
+import dao.Prop;
 import model.User;
 
 public class Session {

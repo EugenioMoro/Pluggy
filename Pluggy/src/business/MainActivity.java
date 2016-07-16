@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 
+import dao.Prop;
 import dao.SerialCommunication;
 
 public class MainActivity {
@@ -27,19 +28,15 @@ public class MainActivity {
 		SerialCommunication serial = new SerialCommunication();
 		serial.initialize();
 		
-		//system ready, simulating first turn on
+		//system ready, registering bot handler
 		 TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 		 try {
 			 telegramBotsApi.registerBot(Session.currentSession().getHandler());
 		 } catch (TelegramApiException e) { e.printStackTrace(); }
 		
-		
-	
+		 //good luck
 
 	}
 
-	public static void Abort(Boolean isGraceful){
-		System.exit((isGraceful) ? 1 : 0);
-	}
 	
 }

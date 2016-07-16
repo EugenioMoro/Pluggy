@@ -10,6 +10,14 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
+/*
+ * This class is pretty much copied and adapted from an arduino playground guide about
+ * managing serial connection in java
+ * 
+ * At the moment, it offers support for windows and linux (just usb emulated serial connection for linux)
+ */
+
+
 public class SerialCommunication implements SerialPortEventListener{
 	
 	SerialPort serialPort;
@@ -77,6 +85,7 @@ public class SerialCommunication implements SerialPortEventListener{
 
 	}
 	
+	//not sure if necessary after all
 	public synchronized void close() {
 		if (serialPort != null) {
 			serialPort.removeEventListener();

@@ -4,13 +4,13 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
-import business.Prop;
 import business.SecurityManager;
 import business.Session;
 import business.UserManager;
+import dao.Prop;
 import model.User;
 
-public class SecurityContext implements context {
+public class SecuritySettingsContext implements context {
 	
 	private final static int SELECTUSER = 0;
 	private final static int SELECTACTION = 1;
@@ -22,7 +22,7 @@ public class SecurityContext implements context {
 	private User u;
 	private Thread worker;
 
-	public SecurityContext(User user) {
+	public SecuritySettingsContext(User user) {
 		this.u=user;
 	}
 	

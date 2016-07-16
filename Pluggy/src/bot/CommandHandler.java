@@ -5,11 +5,15 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
 import botContexts.KwhSettingsContext;
-import botContexts.SecurityContext;
+import botContexts.SecuritySettingsContext;
 import business.HistoryManager;
 import business.SecurityManager;
 import business.Session;
 import business.UserManager;
+
+/*
+ * This class interpretes commands and give response to the user or sets the appropriate context
+ */
 
 public class CommandHandler {
 	
@@ -43,7 +47,7 @@ public class CommandHandler {
 			sendAuthLevel(update);
 			break;
 		case "/securitysettings":
-			UserManager.getInstance().getUserById(update.getMessage().getChatId()).setCurrentContext(new SecurityContext(UserManager.getInstance().getUserById(update.getMessage().getChatId())));
+			UserManager.getInstance().getUserById(update.getMessage().getChatId()).setCurrentContext(new SecuritySettingsContext(UserManager.getInstance().getUserById(update.getMessage().getChatId())));
 			break;
 		case "/settings":
 			UserManager.getInstance().getUserById(update.getMessage().getFrom().getId()).setCurrentContext(new KwhSettingsContext(UserManager.getInstance().getUserById(update.getMessage().getFrom().getId())));

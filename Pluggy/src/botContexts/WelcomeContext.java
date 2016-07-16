@@ -4,9 +4,9 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
-import business.Prop;
 import business.Session;
 import business.UserManager;
+import dao.Prop;
 import model.User;
 
 public class WelcomeContext implements context {
@@ -19,7 +19,7 @@ public class WelcomeContext implements context {
 	
 	private int stage=0;
 	private User u;
-	private final Object lock = new Object();
+	private final Object lock = new Object(); //used to get a well behaving wait for the worker thread
 	private Thread worker;
 	
 	
@@ -69,6 +69,7 @@ public class WelcomeContext implements context {
 		worker.start();
 	}
 	
+	//just sends welcome messages
 	private void presentation(Update update){
 
 
@@ -170,24 +171,21 @@ public class WelcomeContext implements context {
 
 	}
 
-
-		
-		
-		
-
-
 	
 	private void username(Update update){
 
+		//if first turn on this user (the first) ahs to be an administrator
 		if(Session.currentSession().isFirstTurnOn()){
 			u.setIsAdmin(true);
 			u.setIsAuth(true);
 		}
-
-		u.setIsSub(false);
+		
+		//refers to a functionality not yet implemented
 		u.setHours(1);
 		
 		SendMessage m = new SendMessage();
+		
+		//Here is checking if username is available
 		if(UserManager.getInstance().getUserByName(update.getMessage().getText())==null){
 		u.setUsername(update.getMessage().getText());
 		u.setId(update.getMessage().getChatId());
@@ -216,7 +214,7 @@ public class WelcomeContext implements context {
 			abort();
 		}
 		stage++;
-		} else {
+		} else { //if it's not available, ask for it again but don't set next stage
 			m.setChatId(update.getMessage().getChatId().toString());
 			m.setText("I'm sorry, this username is already taken. Can you choose another one please?");
 			try {
@@ -229,7 +227,8 @@ public class WelcomeContext implements context {
 		}
 	}
 
-	private void subscription(Update update){ //should know if is first turn on and act in consequence
+	private void subscription(Update update){ //get subscription preferences, functionality not yes completely implemented
+		
 		if (update.getMessage().getText().equalsIgnoreCase("yes")){
 			u.setIsSub(true);
 			stage++;
@@ -274,7 +273,7 @@ public class WelcomeContext implements context {
 
 	}
 	
-	private void kwhcost(Update update){
+	private void kwhcost(Update update){ //asks for kwh cost value
 		try {
 			synchronized (lock) { lock.wait(1000);}
 		} catch (InterruptedException e) {
@@ -336,19 +335,21 @@ public class WelcomeContext implements context {
 				}
 				return;
 			}
+			//things that need to be done only if first turn on
 			Session.currentSession().getSysProps().setProperty("kwhcost", update.getMessage().getText());
 			Prop.getInstance().sysUpdater();
 			u.setIsAdmin(true);
 			u.setIsAuth(true);
 		}
 		
-		abort();
+		abort(); //context reached last stage
 		
+		//saves user
 		Prop.getInstance().userUpdater();
 		
 		SendMessage m = new SendMessage();
 		m.setChatId(update.getMessage().getChatId().toString());
-		if (Session.currentSession().isFirstTurnOn()){
+		if (Session.currentSession().isFirstTurnOn()){ //different last message depending on first turn on
 			Session.currentSession().setIsFirstTurnOn(false);
 			m.setText("Ok, we are done. As my first user, you are and administrator of this system. If you want more info about, just click /security. You are in charge of setting the security level of the other users from now on, as they are set on the lowest level as a default. If you are lost, click /help");
 		} else {

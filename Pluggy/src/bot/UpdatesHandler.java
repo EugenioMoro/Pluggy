@@ -17,7 +17,6 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 	
 	@Override
 	public String getBotUsername() {
-		// TODO Auto-generated method stub
 		return "Pluggy";
 	}
 
@@ -45,7 +44,6 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 
 				//check if user is in context, if not interpret message and assign context
 				if(!u.isInContext()){
-					//TODO interpreter logic
 					System.out.println("No active context for user " + u.getId() + " - interpreting...");
 					if (update.getMessage().isCommand()){
 						CommandHandler.getInstance().commandInterpreter(update);
@@ -63,7 +61,7 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 
 				}
 
-				//this should be the last thing to be called
+				//this should be the last thing to be called: get context to work
 				if(u.getCurrentContext() != null){
 					u.getCurrentContext().work(update);
 					System.out.println("Update dispatched to worker");
@@ -74,7 +72,6 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 
 	@Override
 	public String getBotToken() {
-		// TODO Auto-generated method stub
 		return Session.currentSession().getToken();
 	}
 
