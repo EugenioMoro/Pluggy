@@ -24,7 +24,7 @@ public class SerialCommunication implements SerialPortEventListener{
 	
 	private static final String PORT_NAMES[]={
 			"COM3",
-			"/dev/ttyUSB0"
+			"/dev/ttyAMA0"
 	};
 	private static final int TIME_OUT = 2000;
 	private final static int BAUD_RATE = 9600;
