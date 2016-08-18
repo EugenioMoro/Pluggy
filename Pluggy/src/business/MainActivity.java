@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 
+import dao.GPIOCommunication;
 import dao.Prop;
 import dao.SerialCommunication;
 
@@ -33,6 +34,9 @@ public class MainActivity {
 		 try {
 			 telegramBotsApi.registerBot(Session.currentSession().getHandler());
 		 } catch (TelegramApiException e) { e.printStackTrace(); }
+		 
+		 //init gpio
+		 GPIOCommunication.getInstance();
 		
 		 //good luck
 

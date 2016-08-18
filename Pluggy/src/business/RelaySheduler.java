@@ -7,6 +7,7 @@ public class RelaySheduler {
 
 	
 	private static RelaySheduler instance;
+	@SuppressWarnings("unused")
 	private ArrayList<ScheduledExecutorService> schedulers;
 	
 	public static RelaySheduler getInstance(){

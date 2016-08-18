@@ -23,7 +23,7 @@ public class SerialCommunication implements SerialPortEventListener{
 	SerialPort serialPort;
 	
 	private static final String PORT_NAMES[]={
-			"COM3",
+			//"COM3",
 			"/dev/ttyAMA0"
 	};
 	private static final int TIME_OUT = 2000;
@@ -39,7 +39,10 @@ public class SerialCommunication implements SerialPortEventListener{
 
 	public void initialize(){
 		
-		
+		// the next line is for Raspberry Pi and 
+        // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyAMA0");
+
 
 		System.out.println("Initializing serial connection");
 		CommPortIdentifier portId = null;
