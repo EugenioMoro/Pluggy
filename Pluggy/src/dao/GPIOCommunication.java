@@ -13,13 +13,19 @@ public class GPIOCommunication {
 	private static GPIOCommunication instance;
 	
 	
+	
 	final GpioController gpio;
 	private GpioPinDigitalInput button;
+	private GpioPinDigitalOutput relay;
+	private GpioPinDigitalOutput led;
 	
 	public GPIOCommunication() {
+		System.out.println("Initializing GPIO");
 		//creating gpio controller and button
 		this.gpio = GpioFactory.getInstance();
 
+		this.setRelay(gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00));
+		
 		this.button = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
                 "MyButton",                   // PIN FRIENDLY NAME (optional)
                 PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
@@ -30,6 +36,7 @@ public class GPIOCommunication {
                 PinState.HIGH);      // PIN STARTUP STATE (optional)
 		
 		this.button.addListener(ButtonEventHandler.getInstance());
+		System.out.println("done");
 			}
 	
 	public static GPIOCommunication getInstance(){
@@ -37,6 +44,22 @@ public class GPIOCommunication {
 			instance = new GPIOCommunication();
 		}
 		return instance;
+	}
+
+	public GpioPinDigitalOutput getRelay() {
+		return relay;
+	}
+
+	public void setRelay(GpioPinDigitalOutput relay) {
+		this.relay = relay;
+	}
+
+	public GpioPinDigitalOutput getLed() {
+		return led;
+	}
+
+	public void setLed(GpioPinDigitalOutput led) {
+		this.led = led;
 	}
 
 
