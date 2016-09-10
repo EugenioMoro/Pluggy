@@ -7,6 +7,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import botContexts.KwhSettingsContext;
 import botContexts.SecuritySettingsContext;
 import business.HistoryManager;
+import business.RelayManagerSheduler;
 import business.SecurityManager;
 import business.Session;
 import business.UserManager;
@@ -51,6 +52,9 @@ public class CommandHandler {
 			break;
 		case "/settings":
 			UserManager.getInstance().getUserById(update.getMessage().getFrom().getId()).setCurrentContext(new KwhSettingsContext(UserManager.getInstance().getUserById(update.getMessage().getFrom().getId())));
+			break;
+		case  "/turnon":
+			turnon();
 			break;
 		default:
 			unrecognized(update);
@@ -166,4 +170,12 @@ public class CommandHandler {
 		}
 	}
 
+	public void turnon(Update update){
+		if(RelayManagerSheduler.getInstance().getState()){
+			MessageSender.getInstance().simpleSend("The plug is already on", update.getMessage().getChatId().toString());
+			return;
+		}
+		RelayManagerSheduler.getInstance().
+	}
+	
 }

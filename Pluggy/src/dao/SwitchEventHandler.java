@@ -3,17 +3,17 @@ package dao;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-import business.RelaySheduler;
+import business.RelayManagerSheduler;
 
-public class ButtonEventHandler implements GpioPinListenerDigital {
+public class SwitchEventHandler implements GpioPinListenerDigital {
 	
-	private static ButtonEventHandler instance;
+	private static SwitchEventHandler instance;
 	
 	private long millis;
 	
-	public static ButtonEventHandler getInstance(){
+	public static SwitchEventHandler getInstance(){
 		if (instance == null){
-			instance = new ButtonEventHandler();
+			instance = new SwitchEventHandler();
 		}
 		return instance;
 	}
@@ -28,7 +28,7 @@ public class ButtonEventHandler implements GpioPinListenerDigital {
 					System.out.println("2sec button press");
 				} else {
 				System.out.println("Short button press");
-				RelaySheduler.getInstance().instantToggle();
+				RelayManagerSheduler.getInstance().switchToggle();
 			}
 		}
 	}
