@@ -62,6 +62,7 @@ public class CommandHandler {
 			break;
 		case "/schedule":
 			UserManager.getInstance().getUserByUpdate(update).setCurrentContext(new SchedulingContext(UserManager.getInstance().getUserByUpdate(update)));
+			break;
 		default:
 			unrecognized(update);
 		}

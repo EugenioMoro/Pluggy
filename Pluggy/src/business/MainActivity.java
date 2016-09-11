@@ -37,7 +37,7 @@ public class MainActivity {
 		 
 		 //init gpio
 		 GPIOCommunication.getInstance();
-		
+
 		 //good luck
 
 	}

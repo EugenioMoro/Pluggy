@@ -9,7 +9,9 @@ import model.User;
 
 public class MessageSender {
 
-	public static MessageSender instance;
+	private static MessageSender instance;
+	
+	private final Object lock = new Object();
 	
 	private SendMessage m = new SendMessage();
 	
@@ -44,6 +46,16 @@ public class MessageSender {
 	
 	public void simpleSend(String text, Update update){
 		simpleSend(text, update.getMessage().getChatId().toString());
+	}
+	
+	public void delayedSend(String text, Update update, long delay){
+		try {
+			lock.wait(delay);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		simpleSend(text, update);
 	}
 	
 }
