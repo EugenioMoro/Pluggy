@@ -5,6 +5,7 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
 import botContexts.KwhSettingsContext;
+import botContexts.SchedulingContext;
 import botContexts.SecuritySettingsContext;
 import business.HistoryManager;
 import business.RelayManagerSheduler;
@@ -54,8 +55,13 @@ public class CommandHandler {
 			UserManager.getInstance().getUserById(update.getMessage().getFrom().getId()).setCurrentContext(new KwhSettingsContext(UserManager.getInstance().getUserById(update.getMessage().getFrom().getId())));
 			break;
 		case  "/turnon":
-			turnon();
+			turnon(update);
 			break;
+		case "/turnoff":
+			turnoff(update);
+			break;
+		case "/schedule":
+			UserManager.getInstance().getUserByUpdate(update).setCurrentContext(new SchedulingContext(UserManager.getInstance().getUserByUpdate(update)));
 		default:
 			unrecognized(update);
 		}
@@ -175,7 +181,15 @@ public class CommandHandler {
 			MessageSender.getInstance().simpleSend("The plug is already on", update.getMessage().getChatId().toString());
 			return;
 		}
-		RelayManagerSheduler.getInstance().
+		RelayManagerSheduler.getInstance().fromBotToggle(UserManager.getInstance().getUserByUpdate(update));
+	}
+	
+	public void turnoff(Update update){
+		if(!RelayManagerSheduler.getInstance().getState()){
+			MessageSender.getInstance().simpleSend("The plug is already off", update.getMessage().getChatId().toString());
+			return;
+		}
+		RelayManagerSheduler.getInstance().fromBotToggle(UserManager.getInstance().getUserByUpdate(update));
 	}
 	
 }

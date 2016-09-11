@@ -40,48 +40,65 @@ public class RelayManagerSheduler {
 	}
 	
 	public void fromBotToggle(User requestingUser){
+		GPIOCommunication.getInstance().getRelay().toggle();
 		toggleNotifier(eventType.FROMBOT, requestingUser);
 	}
 
+	public void scheduledToggle(){
+		//TODO implement
+	}
 	public void toggleNotifier(eventType eventType, User requestingUser){
 		
-		//TODO define enum as final and pass it into runnable for custom notification when relay is toggle from telegram because toggling user message should be different from non-toggling user's
+		final eventType e = eventType;
 		
-		String onoff="off"; //parsing state into user readable info
-		if (getState()){
-			onoff = "on";
+		if (requestingUser == null){ //this is to avoid null pointer exp. in case of a manual switch
+			requestingUser = new User();
+			requestingUser.setId(0);
 		}
 		
-		String message = new String();
-		
-		switch (eventType){
-		case SWITCHED:
-			message = "Someone just turned " + onoff + " the plug";
-			break;
-		case FROMBOT:
-			//TODO implement this
-			break;
-		case SCHEDULED:
-			message = "Plug turned " + onoff + " as scheduled";
-			
-		}
-		final String finalmessage = message; //defining final variable for enclosed scope
-		
+		final User u = requestingUser;
+
 		toggleNotifier = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
+				
+				
+				String onoff="off"; //parsing state into user readable info
+				if (getState()){
+					onoff = "on";
+				}
+
+				//creating message
+				String message = new String();
+
+				switch (e){
+				case SWITCHED:
+					message = "Someone just turned " + onoff + " the plug from the switch";
+					break;
+				case FROMBOT:
+					//notifies the user requesting toggle and crafts message for all the others
+					MessageSender.getInstance().simpleSend("The plug is now switched "+ onoff, u);
+					message="User " + u.getUsername() + " just switched "+ onoff + " the plug";
+					break;
+				case SCHEDULED:
+					message = "Plug turned " + onoff + " as scheduled";
+
+				}
+
 				for (int i=0; i<Session.currentSession().getUsers().size(); i++){
-					if (Session.currentSession().getUsers().get(i).getIsSub()){
-						MessageSender.getInstance().simpleSend(finalmessage, Session.currentSession().getUsers().get(i));
+					//if is subbed and not user requesting switch
+					if (Session.currentSession().getUsers().get(i).getIsSub() && Session.currentSession().getUsers().get(i).getId() != u.getId()){
+						MessageSender.getInstance().simpleSend(message, Session.currentSession().getUsers().get(i));
+						
 					}
 				}
 			}
 		});
-		
+
 		toggleNotifier.start();
 	}
-	
+
 	public Boolean getState(){
 		return GPIOCommunication.getInstance().getRelay().getState().isHigh();
 	}

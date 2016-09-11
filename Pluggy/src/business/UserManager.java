@@ -2,6 +2,8 @@ package business;
 
 import java.util.Properties;
 
+import org.telegram.telegrambots.api.objects.Update;
+
 import dao.Prop;
 import model.User;
 
@@ -50,6 +52,10 @@ public class UserManager {
 			}
 		}
 		return null;
+	}
+	
+	public User getUserByUpdate(Update update){
+		return getUserById(update.getMessage().getChatId());
 	}
 	
 	public User getUserByName(String username){

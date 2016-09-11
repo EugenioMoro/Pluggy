@@ -2,6 +2,7 @@ package bot;
 
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.objects.Update;
 
 import business.Session;
 import model.User;
@@ -39,6 +40,10 @@ public class MessageSender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void simpleSend(String text, Update update){
+		simpleSend(text, update.getMessage().getChatId().toString());
 	}
 	
 }
