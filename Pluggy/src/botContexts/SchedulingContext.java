@@ -3,6 +3,7 @@ package botContexts;
 import org.telegram.telegrambots.api.objects.Update;
 
 import bot.MessageSender;
+import business.RelayManagerSheduler;
 import model.User;
 
 public class SchedulingContext implements context{
@@ -191,6 +192,11 @@ public class SchedulingContext implements context{
 		}
 		
 		if (parsed){
+			if (RelayManagerSheduler.getInstance().taskExists(onHours, onMinutes)){
+				MessageSender.getInstance().simpleSend("This task at that time already exists, please choose another time or /cancel", update);
+				u.setCanReply(true);
+				return;
+			}
 			if (isBoth){
 				stage = ASKFOROFFTIME;
 				askForOffTime(update);
@@ -222,6 +228,11 @@ public class SchedulingContext implements context{
 				}
 				if (!parsed){
 					MessageSender.getInstance().simpleSend("Sorry, I did not understand. Can you use hh:mm format, please?", update);
+					u.setCanReply(true);
+					return;
+				}
+				if (RelayManagerSheduler.getInstance().taskExists(offHours, offMinutes)){
+					MessageSender.getInstance().simpleSend("This task at that time already exists, please choose another time or /cancel", update);
 					u.setCanReply(true);
 					return;
 				}
@@ -279,7 +290,12 @@ public class SchedulingContext implements context{
 		u.setCanReply(false);
 		switch (update.getMessage().getText()){
 		case "/correct":
-			//TODO implement here
+			if (onHours != null){
+				RelayManagerSheduler.getInstance().addTask(onHours, onMinutes, true, repeat);
+			}
+			if (offHours != null){
+				RelayManagerSheduler.getInstance().addTask(offHours, offMinutes, false, repeat);
+			}
 			MessageSender.getInstance().simpleSend("Ok, everything is set", update);
 			abort();
 			break;

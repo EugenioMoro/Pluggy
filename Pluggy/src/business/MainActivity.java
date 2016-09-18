@@ -36,7 +36,7 @@ public class MainActivity {
 		 } catch (TelegramApiException e) { e.printStackTrace(); }
 		 
 		 //init gpio
-		 GPIOCommunication.getInstance();
+		 //GPIOCommunication.getInstance();
 
 		 //good luck
 

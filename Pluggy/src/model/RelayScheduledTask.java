@@ -9,9 +9,19 @@ public class RelayScheduledTask {
 	private Boolean state;
 	private int hours;
 	private int minutes;
+	private Boolean repeats;
 	
 	
 	
+	public RelayScheduledTask(ScheduledExecutorService executor, Boolean state, int hours, int minutes,
+			Boolean repeats) {
+		super();
+		this.executor = executor;
+		this.state = state;
+		this.hours = hours;
+		this.minutes = minutes;
+		this.setRepeats(repeats);
+	}
 	
 	public ScheduledExecutorService getExecutor() {
 		return executor;
@@ -36,6 +46,14 @@ public class RelayScheduledTask {
 	}
 	public void setMinutes(int minutes) {
 		this.minutes = minutes;
+	}
+
+	public Boolean getRepeats() {
+		return repeats;
+	}
+
+	public void setRepeats(Boolean repeats) {
+		this.repeats = repeats;
 	}
 	
 	
