@@ -173,4 +173,8 @@ public class RelayManagerSheduler {
 		}
 		return false;
 	}
+
+	public ArrayList<RelayScheduledTask> getScheduledTasks() {
+		return scheduledTasks;
+	}
 }

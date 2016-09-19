@@ -5,6 +5,7 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
 import botContexts.KwhSettingsContext;
+import botContexts.ManageTasksContext;
 import botContexts.SchedulingContext;
 import botContexts.SecuritySettingsContext;
 import business.HistoryManager;
@@ -62,6 +63,9 @@ public class CommandHandler {
 			break;
 		case "/schedule":
 			UserManager.getInstance().getUserByUpdate(update).setCurrentContext(new SchedulingContext(UserManager.getInstance().getUserByUpdate(update)));
+			break;
+		case "/tasksettings":
+			UserManager.getInstance().getUserByUpdate(update).setCurrentContext(new ManageTasksContext());
 			break;
 		default:
 			unrecognized(update);

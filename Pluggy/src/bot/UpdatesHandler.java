@@ -63,8 +63,12 @@ public class UpdatesHandler extends TelegramLongPollingBot {
 
 				//this should be the last thing to be called: get context to work
 				if(u.getCurrentContext() != null){
-					u.getCurrentContext().work(update);
-					System.out.println("Update dispatched to worker");
+					if(update.getMessage().getText().equals("/cancel")){
+						u.getCurrentContext().abort();
+					} else {
+						u.getCurrentContext().work(update);
+						System.out.println("Update dispatched to worker");
+					}
 				}
 			}
 		}

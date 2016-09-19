@@ -185,7 +185,9 @@ public class SchedulingContext implements context{
 			try {
 				onHours=Integer.parseInt(message.substring(0, 2));
 				onMinutes=Integer.parseInt(message.substring(3));
-				parsed = true;
+				if(onHours>=0 && onHours<=24 && onMinutes>=0 && onMinutes<=59){
+					parsed=true;
+				}
 			} catch (Exception e) {
 			
 			}
@@ -221,7 +223,9 @@ public class SchedulingContext implements context{
 					try {
 						offHours=Integer.parseInt(message.substring(0, 2));
 						offMinutes=Integer.parseInt(message.substring(3));
-						parsed = true;
+						if(offHours>=0 && offHours<=24 && offMinutes>=0 & offMinutes<=59){
+							parsed=true;
+						}
 					} catch (Exception e) {
 					
 					}
@@ -269,13 +273,13 @@ public class SchedulingContext implements context{
 		String message;
 		message = "I'm turning ";
 		if (onHours != null){
-			message = message + "on the plug at " + onHours + ":" + onMinutes;
+			message = message + "on the plug at " + devilIsInTheDetails(onHours) + ":" + devilIsInTheDetails(onMinutes);
 		}
 		if (isBoth){
 			message = message + " and turning ";
 		}
 		if (offHours != null){
-			message = message + "off the plug at " + offHours + ":" + offMinutes;
+			message = message + "off the plug at " + devilIsInTheDetails(offHours) + ":" + devilIsInTheDetails(offMinutes);
 		}
 		if(repeat){
 			message = message + " everyday.";
@@ -306,6 +310,14 @@ public class SchedulingContext implements context{
 			MessageSender.getInstance().simpleSend("Sorry, I did not understand. ", update);
 			confirmation(update);
 		}
+	}
+	
+	private String devilIsInTheDetails(int i){
+		//converting int <=9 into string with a leading 0, else just parse
+		if(i<=9){
+			return "0" + String.valueOf(i); 
+		}
+		return String.valueOf(i);
 	}
 	
 }
