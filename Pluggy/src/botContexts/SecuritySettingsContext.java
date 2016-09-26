@@ -118,7 +118,7 @@ public class SecuritySettingsContext implements context {
 		m.setChatId(update.getMessage().getChatId().toString());
 		String s = "";
 		if (us.getIsAdmin()){
-			s="User " + us.getUsername() + " is an admin. How would you like to proceed?";
+			s="User " + us.getUsername() + " is an admin. How would you like to proceed? ";
 			s=s+"Set as an /authorized user. /revoke all priviledges";
 		} else if (us.getIsAuth()){
 			s="User " + us.getUsername() + " is authorized to see consumes. How woud you like to proceed?";

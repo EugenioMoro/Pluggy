@@ -35,7 +35,7 @@ public class GPIOCommunication {
 		GpioPinDigitalOutput reference = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03,   // PIN NUMBER
                 PinState.HIGH);      // PIN STARTUP STATE (optional)
 		
-		this.led = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, PinState.HIGH);
+		this.led = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26);
 		
 		this.button.addListener(SwitchEventHandler.getInstance());
 		System.out.println("done");

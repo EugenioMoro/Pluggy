@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import bot.MessageSender;
 import dao.GPIOCommunication;
+import dao.LedControl;
 import model.RelayScheduledTask;
 import model.User;
 
@@ -83,11 +84,13 @@ public class RelayManagerSheduler {
 	public void switchToggle(){ //should be used only when switching from on board switch
 		GPIOCommunication.getInstance().getRelay().toggle();
 		toggleNotifier(eventType.SWITCHED, null);
+		LedControl.getInstance().shortBlink();
 	}
 	
 	public void fromBotToggle(User requestingUser){
 		GPIOCommunication.getInstance().getRelay().toggle();
 		toggleNotifier(eventType.FROMBOT, requestingUser);
+		LedControl.getInstance().shortBlink();
 	}
 
 	public void scheduledSwitch(Boolean state){
@@ -95,6 +98,7 @@ public class RelayManagerSheduler {
 			GPIOCommunication.getInstance().getRelay().toggle();
 			toggleNotifier(eventType.SCHEDULED, null);
 			System.out.println("Executing scheduled switch");
+			LedControl.getInstance().shortBlink();
 		}
 		
 	}

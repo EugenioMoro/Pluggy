@@ -8,6 +8,7 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.BotSession;
 
+import dao.GPIOCommunication;
 import dao.LedControl;
 import dao.Prop;
 import dao.SerialCommunication;
@@ -33,7 +34,10 @@ public class MainActivity {
 		//initializing arduino serial connection
 		SerialCommunication serial = new SerialCommunication();
 		serial.initialize();
-
+		
+		//init gpio
+		 GPIOCommunication.getInstance();
+		
 		//checking internet connection
 		synchronized(lock){
 			while(!isConnected()){
@@ -42,9 +46,10 @@ public class MainActivity {
 				lock.wait(5000);
 			}
 		}
-
+ 
 		//system ready, registering bot handler
 		TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+		@SuppressWarnings("unused")
 		BotSession botSession = null;
 		 try {
 			 botSession=telegramBotsApi.registerBot(Session.currentSession().getHandler());
@@ -52,24 +57,17 @@ public class MainActivity {
 		 } catch (TelegramApiException e) {e.printStackTrace(); }
 		 LedControl.getInstance().idleBlink();
 		 
-		 
+
 		 synchronized (lock){
 			 while(true){ //loop for entire runtime
 				 if(isConnected()){ //check internet connection every 10 seconds
 					 lock.wait(1000);
 					 continue;
 				 }
-				 //if connection lost, unregister bot api
-				 botSession.close();
 				 while(true){ //and loop until is connected
 					 if(isConnected()){
-						 try {
-							 telegramBotsApi = new TelegramBotsApi();
-							 telegramBotsApi.registerBot(Session.currentSession().getHandler());
-							 System.out.println("Bot api ready");
-						 } catch (TelegramApiException e) {e.printStackTrace(); }
 						 LedControl.getInstance().idleBlink();
-						 continue;
+						 break;
 					 }
 					 System.out.println("Connection lost, next try in 5 seconds");
 					 LedControl.getInstance().blinkForError();
@@ -77,13 +75,11 @@ public class MainActivity {
 				 }
 			 }
 		 }
-		 
-		 //init gpio
-		 //GPIOCommunication.getInstance();
+
 
 		 //good luck
-		 
-		 
+
+
 
 	}
 	
