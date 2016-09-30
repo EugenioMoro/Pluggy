@@ -180,14 +180,17 @@ public class CommandHandler {
 	}
 
 	private void turnon(Update update){
+		System.out.println("Turn on command");
 		if(RelayManagerSheduler.getInstance().getState()){
 			MessageSender.getInstance().simpleSend("The plug is already on", update.getMessage().getChatId().toString());
 			return;
 		}
 		RelayManagerSheduler.getInstance().fromBotToggle(UserManager.getInstance().getUserByUpdate(update));
+		
 	}
 	
 	private void turnoff(Update update){
+		System.out.println("Turn off command");
 		if(!RelayManagerSheduler.getInstance().getState()){
 			MessageSender.getInstance().simpleSend("The plug is already off", update.getMessage().getChatId().toString());
 			return;
